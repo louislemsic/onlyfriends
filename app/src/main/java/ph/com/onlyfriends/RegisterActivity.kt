@@ -34,7 +34,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun initializeFirebase() {
-        mAuth = Firebase.auth
+        mAuth = FirebaseAuth.getInstance()
         db = FirebaseDatabase.getInstance()
     }
 
@@ -130,6 +130,11 @@ class RegisterActivity : AppCompatActivity() {
         }
         if (password.isEmpty()) {
             this.etPassword.error = "Required Field"
+            this.etPassword.requestFocus()
+            isValid = false
+        }
+        else if (password.length <= 8){
+            this.etPassword.error = "At least 8 characters"
             this.etPassword.requestFocus()
             isValid = false
         }
