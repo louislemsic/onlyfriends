@@ -22,4 +22,7 @@
     <string name="et_add_handle">Handle</string>
     <string name="at">\@</string>
     <string name="btn_sign_out">Sign Out</string>
+    <string name="handle_placeholder">\@HandlePlaceholder</string>
+    <string name="sample_person_name">Juan Dela Cruz</string>
+    <string name="profile_picture">Profile Picture</string>
 </resources>

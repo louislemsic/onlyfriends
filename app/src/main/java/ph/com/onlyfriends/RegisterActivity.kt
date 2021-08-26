@@ -87,7 +87,7 @@ class RegisterActivity : AppCompatActivity() {
             if(task.isSuccessful) {
 
                 // If successful in registering the email, place the information to Firebase Database
-                db.getReference(Collections.friends.name).child(mAuth.currentUser!!.uid).setValue(friend).addOnCompleteListener {
+                db.getReference(Collections.Friends.name).child(mAuth.currentUser!!.uid).setValue(friend).addOnCompleteListener {
                     if(it.isSuccessful) {
                         successfulRegistration()
                     }
