@@ -1,0 +1,2 @@
+rootProject.name = "OnlyFriends PH"
+include ':app'
