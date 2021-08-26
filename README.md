@@ -1,4 +1,4 @@
-# OnlyFriends
+# OnlyFriends PH
 A chat application utilizing the features of Firebase's Authentication, Real-time Database, and Notifications. My co-workers for this project are Aki Escarraga and Cyrl de Guzman. This project is for the partial completion of the course Mobile Development in De La Salle University.
 
 ## Running the files in Android Studio
