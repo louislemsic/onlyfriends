@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "752431690147",
+    "firebase_url": "https://onlyfriendsph-default-rtdb.firebaseio.com",
+    "project_id": "onlyfriendsph",
+    "storage_bucket": "onlyfriendsph.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752431690147:android:28570cee48d28adbc8aa16",
+        "android_client_info": {
+          "package_name": "ph.com.onlyfriends"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752431690147-5r1r30flba5jk0a6qp3ddnjr4m32jlng.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA048br3Wyw_WcVi3c3HYfOLQTD-iKHwyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752431690147-5r1r30flba5jk0a6qp3ddnjr4m32jlng.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

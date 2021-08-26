@@ -1,3 +1,25 @@
 <resources>
-    <string name="app_name">OnlyFriends PH</string>
+    <string name="app_name">OnlyFriends</string>
+    <string name="nav_message">Message</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_messenger">Messenger</string>
+    <string name="iv_onlyfriends_logo">The logo of OnlyFriends in the screen</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btn_login_temp">Login</string>
+    <string name="splash_screen_logo">Splash Screen Logo</string>
+    <string name="btn_main_login">Login</string>
+    <string name="tv_main_register">New here? Create an account</string>
+    <string name="password_hint">Password</string>
+    <string name="email_hint">Email</string>
+    <string name="tv_main_login">LOGIN</string>
+    <string name="logo_login">The Logo in the Login Screen</string>
+    <string name="tv_add_login">Already have an account? Login</string>
+    <string name="tv_add_register">REGISTER</string>
+    <string name="btn_add_register">Register</string>
+    <string name="name">Name</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="et_add_handle">Handle</string>
+    <string name="at">\@</string>
+    <string name="btn_sign_out">Sign Out</string>
 </resources>
