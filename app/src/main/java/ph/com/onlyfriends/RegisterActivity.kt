@@ -2,6 +2,7 @@ package ph.com.onlyfriends
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.widget.doAfterTextChanged
@@ -83,9 +84,9 @@ class RegisterActivity : AppCompatActivity() {
         // Check if Handle is taken
         etHandle.doAfterTextChanged {
             val handle: String = it.toString().trim()
-            if(isHandleTaken(handle)) {
-                this.etPassword.error = "Handle is Taken"
-                this.etPassword.requestFocus()
+            if(isHandleTaken("@$handle")) {
+                this.etHandle.error = "Handle is Taken"
+                this.etHandle.requestFocus()
             }
         }
     }
@@ -199,6 +200,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.toString())
             }
         })
 
@@ -221,6 +223,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.toString())
             }
         })
 
