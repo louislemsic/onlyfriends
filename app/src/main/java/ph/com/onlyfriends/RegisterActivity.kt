@@ -7,11 +7,9 @@ import android.view.View
 import android.widget.*
 import androidx.core.widget.doAfterTextChanged
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import ph.com.onlyfriends.models.Collections
+import ph.com.onlyfriends.models.FinderThread
 import ph.com.onlyfriends.models.Friend
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -22,6 +20,9 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var etPassword: EditText
     private lateinit var etName: EditText
     private lateinit var etHandle: EditText
+    private lateinit var btnRegister: Button
+
+
     private val emails = ArrayList<String>()
     private val handles = ArrayList<String>()
 
@@ -56,8 +57,8 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         // Register Button
-        val register = findViewById<Button>(R.id.btn_add_register)
-        register.setOnClickListener {
+        btnRegister = findViewById(R.id.btn_add_register)
+        btnRegister.setOnClickListener {
 
             // get the data of the user
             val email: String = etEmail.text.toString().trim()
@@ -74,24 +75,14 @@ class RegisterActivity : AppCompatActivity() {
 
         // Check if Email is taken
         etEmail.doAfterTextChanged {
-            val email: String = it.toString().trim()
-            if(isEmailTaken(email)) {
-                this.etEmail.error = "Email is Taken"
-                this.etEmail.requestFocus()
-            }
+            FinderThread(db, etEmail, FinderThread.EMAIL).run()
         }
 
         // Check if Handle is taken
         etHandle.doAfterTextChanged {
-            val handle: String = it.toString().trim()
-            if(isHandleTaken("@$handle")) {
-                this.etHandle.error = "Handle is Taken"
-                this.etHandle.requestFocus()
-            }
+            FinderThread(db, etHandle, FinderThread.HANDLE).run()
         }
     }
-
-
 
     private fun registerAndStore(friend: Friend, password: String) {
         findViewById<ProgressBar>(R.id.pb_register).visibility = View.VISIBLE
@@ -138,7 +129,11 @@ class RegisterActivity : AppCompatActivity() {
             isValid = false
         }
 
-        if (handle.isEmpty()) {                       // Checks the Handle Field if Empty
+        if (etHandle.error != null) {
+            Toast.makeText(this, "Fix all errors first", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        else if (handle.isEmpty()) {                       // Checks the Handle Field if Empty
             this.etHandle.error = "Required Field"
             this.etHandle.requestFocus()
             isValid = false
@@ -160,7 +155,11 @@ class RegisterActivity : AppCompatActivity() {
             isValid = false
         }
 
-        if (email.isEmpty()) {                         // Checks the Email Field if Empty
+        if (etEmail.error != null) {
+            Toast.makeText(this, "Fix all errors first", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        else if (email.isEmpty()) {                         // Checks the Email Field if Empty
             this.etEmail.error = "Required Field"
             this.etEmail.requestFocus()
             isValid = false
@@ -186,51 +185,5 @@ class RegisterActivity : AppCompatActivity() {
         val pattern: Pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
         val matcher: Matcher = pattern.matcher(handle)
         return matcher.matches()
-    }
-
-    private fun isHandleTaken(handle: String): Boolean {
-        var isTaken = false
-
-        db.reference.child(Collections.Friends.name).addValueEventListener(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (friend in snapshot.children) {
-                    val string = friend.child("handle").value.toString()
-                    handles.add(string)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Error", error.toString())
-            }
-        })
-
-        for (retrievedHandles in handles)
-            if (handle == retrievedHandles)
-                isTaken = true
-
-        return isTaken
-    }
-
-    private fun isEmailTaken(email: String): Boolean {
-        var isTaken = false
-
-        db.reference.child(Collections.Friends.name).addValueEventListener(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (friend in snapshot.children) {
-                    val string = friend.child("email").value.toString()
-                    emails.add(string)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Error", error.toString())
-            }
-        })
-
-        for (retrievedEmail in emails)
-            if (email == retrievedEmail)
-                isTaken = true
-
-        return isTaken
     }
 }
