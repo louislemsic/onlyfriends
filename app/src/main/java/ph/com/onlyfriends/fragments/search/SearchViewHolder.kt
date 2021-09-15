@@ -9,9 +9,9 @@ import ph.com.onlyfriends.models.Friend
 
 open class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private var ivDefaultPicture: ImageView = itemView.findViewById(R.id.iv_template_dp)
-    private var tvUsername: TextView = itemView.findViewById(R.id.tv_template_name)
-    private var tvHandle: TextView = itemView.findViewById(R.id.tv_template_handle)
+    private var ivDefaultPicture: ImageView = itemView.findViewById(R.id.tv_search_dp)
+    private var tvUsername: TextView = itemView.findViewById(R.id.tv_search_name)
+    private var tvHandle: TextView = itemView.findViewById(R.id.tv_search_handle)
 
     open fun bind(model: Friend) {
         ivDefaultPicture.setImageResource(R.drawable.ic_default_user)

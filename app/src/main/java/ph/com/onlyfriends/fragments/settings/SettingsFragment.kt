@@ -46,10 +46,9 @@ class SettingsFragment : Fragment() {
         myPFP.setImageResource(R.drawable.ic_default_user)
 
         db.reference.child(Collections.Friends.name).addValueEventListener(object: ValueEventListener {
-
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (friend in snapshot.children) {
-                    if (friend.value == user.uid) {
+                    if (friend.key == user.uid) {
                         myName.text = friend.child("name").value.toString()
                         myHandle.text = friend.child("handle").value.toString()
                     }

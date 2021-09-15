@@ -27,4 +27,10 @@
     <string name="profile_picture">Profile Picture</string>
     <string name="iv_my_pfp">the PFP of the user</string>
     <string name="my_profile">My Profile</string>
+    <string name="fab_add_post">The button that adds post</string>
+    <string name="tv_post_content">What a time to be alive in this pandemic! #MindBlown</string>
+    <string name="post_title">Tell Us What is Happening</string>
+    <string name="btn_post">Post</string>
+    <string name="btn_post_cancel">Cancel</string>
+    <string name="et_post_content">Type what you are thinking here.</string>
 </resources>
