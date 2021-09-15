@@ -26,4 +26,5 @@
     <string name="sample_person_name">Juan Dela Cruz</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="iv_my_pfp">the PFP of the user</string>
+    <string name="my_profile">My Profile</string>
 </resources>

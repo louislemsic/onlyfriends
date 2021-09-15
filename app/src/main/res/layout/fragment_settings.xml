@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="50dp" />
+            app:layout_constraintGuide_begin="68dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_settings_left"
@@ -84,6 +84,16 @@
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/tv_my_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_my_name" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="@string/my_profile"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/gl_settings_top"
+            app:layout_constraintStart_toStartOf="@+id/gl_settings_left" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
