@@ -2,14 +2,14 @@ package ph.com.onlyfriends
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.widget.doAfterTextChanged
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import ph.com.onlyfriends.models.Collections
-import ph.com.onlyfriends.models.FinderThread
+import ph.com.onlyfriends.models.EmailFinderThread
+import ph.com.onlyfriends.models.HandleFinderThread
 import ph.com.onlyfriends.models.Friend
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -21,10 +21,6 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var etName: EditText
     private lateinit var etHandle: EditText
     private lateinit var btnRegister: Button
-
-
-    private val emails = ArrayList<String>()
-    private val handles = ArrayList<String>()
 
     // Firebase Components
     private lateinit var mAuth: FirebaseAuth // Firebase Authentication
@@ -75,12 +71,12 @@ class RegisterActivity : AppCompatActivity() {
 
         // Check if Email is taken
         etEmail.doAfterTextChanged {
-            FinderThread(db, etEmail, FinderThread.EMAIL).run()
+            EmailFinderThread(db, etEmail).run()
         }
 
         // Check if Handle is taken
         etHandle.doAfterTextChanged {
-            FinderThread(db, etHandle, FinderThread.HANDLE).run()
+            HandleFinderThread(db, etHandle).run()
         }
     }
 
