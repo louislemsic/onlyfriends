@@ -25,4 +25,5 @@
     <string name="handle_placeholder">\@HandlePlaceholder</string>
     <string name="sample_person_name">Juan Dela Cruz</string>
     <string name="profile_picture">Profile Picture</string>
+    <string name="iv_my_pfp">the PFP of the user</string>
 </resources>

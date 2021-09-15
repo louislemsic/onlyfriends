@@ -10,8 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- TO BE DELETED -->
-
         <Button
             android:id="@+id/btn_sign_out"
             android:layout_width="0dp"
@@ -19,7 +17,6 @@
             android:layout_marginStart="60dp"
             android:layout_marginEnd="60dp"
             android:text="@string/btn_sign_out"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline_settings" />
@@ -29,7 +26,64 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_end="311dp" />
+            app:layout_constraintGuide_end="116dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_settings_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="50dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_settings_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="25dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_settings_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="25dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_settings_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="309dp" />
+
+        <ImageView
+            android:id="@+id/iv_my_pfp"
+            android:layout_width="68dp"
+            android:layout_height="69dp"
+            android:src="@drawable/ic_default_user"
+            app:layout_constraintStart_toStartOf="@+id/gl_settings_left"
+            app:layout_constraintTop_toTopOf="@+id/gl_settings_top"
+            android:contentDescription="@string/iv_my_pfp" />
+
+        <TextView
+            android:id="@+id/tv_my_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/sample_person_name"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/gl_settings_right"
+            app:layout_constraintStart_toEndOf="@+id/iv_my_pfp"
+            app:layout_constraintTop_toTopOf="@+id/gl_settings_top" />
+
+        <TextView
+            android:id="@+id/tv_my_handle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/handle_placeholder"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_my_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_my_name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
