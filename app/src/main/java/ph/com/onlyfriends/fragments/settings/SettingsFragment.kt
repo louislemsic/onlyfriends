@@ -66,8 +66,8 @@ class SettingsFragment : Fragment() {
         user = FirebaseAuth.getInstance().currentUser!!
         db = FirebaseDatabase.getInstance()
         myName = view.findViewById(R.id.tv_my_name)
-        myHandle = view.findViewById(R.id.tv_my_handle)
-        myPFP = view.findViewById(R.id.iv_my_pfp)
+        myHandle = view.findViewById(R.id.tv_profile_handle)
+        myPFP = view.findViewById(R.id.iv_profile_pfp)
 
         //Sign Out Button
         view.findViewById<Button>(R.id.btn_sign_out).setOnClickListener {

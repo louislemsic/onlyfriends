@@ -57,7 +57,7 @@
             app:layout_constraintGuide_begin="309dp" />
 
         <ImageView
-            android:id="@+id/iv_my_pfp"
+            android:id="@+id/iv_profile_pfp"
             android:layout_width="68dp"
             android:layout_height="69dp"
             android:src="@drawable/ic_default_user"
@@ -73,11 +73,11 @@
             android:text="@string/sample_person_name"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/gl_settings_right"
-            app:layout_constraintStart_toEndOf="@+id/iv_my_pfp"
+            app:layout_constraintStart_toEndOf="@+id/iv_profile_pfp"
             app:layout_constraintTop_toTopOf="@+id/gl_settings_top" />
 
         <TextView
-            android:id="@+id/tv_my_handle"
+            android:id="@+id/tv_profile_handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/handle_placeholder"

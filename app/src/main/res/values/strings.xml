@@ -33,4 +33,5 @@
     <string name="btn_post">Post</string>
     <string name="btn_post_cancel">Cancel</string>
     <string name="et_post_content">Type what you are thinking here.</string>
+    <string name="follow">Follow</string>
 </resources>

@@ -94,4 +94,9 @@ class SearchFragment : Fragment() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        rvUserSearchList.adapter?.notifyDataSetChanged()
+    }
 }
