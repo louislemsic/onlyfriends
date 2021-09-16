@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ph.com.onlyfriends.fragments.chat.PostFragment
 import ph.com.onlyfriends.fragments.search.SearchFragment
-import ph.com.onlyfriends.fragments.settings.SettingsFragment
+import ph.com.onlyfriends.fragments.profile.ViewProfileFragment
 
 class HomeActivity : AppCompatActivity() {
 
@@ -45,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.nav_settings -> {  //Settings Fragment
-                    loadFragment(SettingsFragment())
+                    loadFragment(ViewProfileFragment())
                     return@setOnItemSelectedListener true
                 }
                 else -> {   //Default is Forecast Fragment

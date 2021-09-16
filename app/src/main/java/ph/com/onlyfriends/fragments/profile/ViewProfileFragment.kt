@@ -1,4 +1,4 @@
-package ph.com.onlyfriends.fragments.settings
+package ph.com.onlyfriends.fragments.profile
 
 import android.content.Intent
 import android.os.Bundle
@@ -22,7 +22,7 @@ import ph.com.onlyfriends.EditProfileActivity
 import ph.com.onlyfriends.R
 import ph.com.onlyfriends.models.Collections
 
-class SettingsFragment : Fragment() {
+class ViewProfileFragment : Fragment() {
 
     private lateinit var myName: TextView
     private lateinit var myHandle: TextView
@@ -40,7 +40,7 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_settings, container, false)
+        val view = inflater.inflate(R.layout.fragment_view_profile, container, false)
 
         initializeComponents(view)
         initializeProfile(view)
