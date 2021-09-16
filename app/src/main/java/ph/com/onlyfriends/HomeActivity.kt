@@ -1,7 +1,8 @@
 package ph.com.onlyfriends
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ph.com.onlyfriends.fragments.chat.PostFragment
@@ -11,6 +12,19 @@ import ph.com.onlyfriends.fragments.settings.SettingsFragment
 class HomeActivity : AppCompatActivity() {
 
     private val bundle = Bundle()
+
+    override fun onBackPressed() {
+        moveTaskToBack(true)
+    }
+
+    // Before 2.0
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(true)
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
