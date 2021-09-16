@@ -22,8 +22,8 @@
     <string name="et_add_handle">Handle</string>
     <string name="at">\@</string>
     <string name="btn_sign_out">Sign Out</string>
-    <string name="handle_placeholder">Loading...</string>
-    <string name="sample_person_name">Loading...</string>
+    <string name="handle_placeholder">Loading…</string>
+    <string name="sample_person_name">Loading…</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="iv_my_pfp">the PFP of the user</string>
     <string name="my_profile">My Profile</string>
@@ -34,4 +34,10 @@
     <string name="btn_post_cancel">Cancel</string>
     <string name="et_post_content">Type what you are thinking here.</string>
     <string name="follow">Follow</string>
+    <string name="tv_settings_bio">You might want to know me more…</string>
+    <string name="btn_edit_profile">Edit Profile</string>
+    <string name="tv_followers">0</string>
+    <string name="tv_settings_bio_placeholder">Usually this shows what\'s interesting about you but it\'s not appearing. Wait let me fix it.</string>
+    <string name="sign_out_title">Wait, were you thinking of leaving? Can\'t we talk this one out?</string>
+    <string name="bio_empty">You don\'t even have a bio! Weird. Go tap that Edit Profile, to have one!</string>
 </resources>

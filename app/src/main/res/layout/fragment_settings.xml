@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="60dp"
             android:layout_marginEnd="60dp"
+            android:backgroundTint="@color/alert_red"
             android:text="@string/btn_sign_out"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="68dp" />
+            app:layout_constraintGuide_begin="5dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_settings_left"
@@ -54,46 +55,127 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="309dp" />
+            app:layout_constraintGuide_begin="374dp" />
 
         <ImageView
             android:id="@+id/iv_profile_pfp"
             android:layout_width="68dp"
             android:layout_height="69dp"
+            android:contentDescription="@string/iv_my_pfp"
             android:src="@drawable/ic_default_user"
             app:layout_constraintStart_toStartOf="@+id/gl_settings_left"
-            app:layout_constraintTop_toTopOf="@+id/gl_settings_top"
-            android:contentDescription="@string/iv_my_pfp" />
+            app:layout_constraintTop_toTopOf="@+id/gl_settings_top" />
 
         <TextView
             android:id="@+id/tv_my_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="14dp"
             android:text="@string/sample_person_name"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/gl_settings_right"
-            app:layout_constraintStart_toEndOf="@+id/iv_profile_pfp"
-            app:layout_constraintTop_toTopOf="@+id/gl_settings_top" />
+            android:textColor="@color/black"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/gl_settings_left"
+            app:layout_constraintTop_toBottomOf="@+id/iv_profile_pfp" />
 
         <TextView
             android:id="@+id/tv_profile_handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/handle_placeholder"
-            android:textSize="16sp"
+            android:textColor="@color/of_shade2"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/tv_my_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_my_name" />
 
         <TextView
+            android:id="@+id/tv_bio_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="@string/my_profile"
-            android:textSize="34sp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tv_settings_bio"
+            android:textColor="@color/of_main"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/gl_settings_top"
+            app:layout_constraintStart_toStartOf="@+id/gl_settings_left"
+            app:layout_constraintTop_toBottomOf="@+id/ll_followers" />
+
+        <Button
+            android:id="@+id/btn_edit_profile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_edit_profile"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_profile_pfp"
+            app:layout_constraintEnd_toStartOf="@+id/gl_settings_right"
+            app:layout_constraintTop_toTopOf="@+id/iv_profile_pfp" />
+
+        <LinearLayout
+            android:id="@+id/ll_followers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            android:gravity="center|top"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@+id/gl_settings_right"
+            app:layout_constraintStart_toStartOf="@+id/gl_settings_left"
+            app:layout_constraintTop_toBottomOf="@+id/tv_profile_handle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Really? You have " />
+
+            <TextView
+                android:id="@+id/tv_followers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_followers"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" people following you?" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_settings_bio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:text="@string/tv_settings_bio_placeholder"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/gl_settings_right"
+            app:layout_constraintStart_toStartOf="@+id/gl_settings_left"
+            app:layout_constraintTop_toBottomOf="@+id/tv_bio_title" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/sample_person_name"
+            android:src="@drawable/people"
+            app:layout_constraintBottom_toTopOf="@+id/tv_sign_out_title"
+            app:layout_constraintEnd_toStartOf="@+id/gl_settings_right"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/gl_settings_left"
+            app:layout_constraintTop_toTopOf="@+id/gl_settings_bottom"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/tv_sign_out_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/sign_out_title"
+            android:textColor="@color/alert_red"
+            android:textSize="12sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_settings"
+            app:layout_constraintEnd_toStartOf="@+id/gl_settings_right"
             app:layout_constraintStart_toStartOf="@+id/gl_settings_left" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

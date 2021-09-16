@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlyFriendsPH">
+        <activity android:name=".EditProfileActivity"></activity>
         <activity android:name=".ProfileActivity" />
         <activity android:name=".AddPostActivity" />
         <activity android:name=".HomeActivity" />

@@ -10,5 +10,8 @@
 
     <color name="of_main">#0181ef</color>
     <color name="of_shade">#00aff0</color>
+    <color name="of_shade2">#3DC0D1</color>
     <color name="bluish_grey">#90a4ae</color>
+    <color name="alert_red">#D13148</color>
+
 </resources>

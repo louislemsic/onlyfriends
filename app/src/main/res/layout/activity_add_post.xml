@@ -25,6 +25,7 @@
         app:layout_constraintGuide_begin="173dp" />
 
     <TextView
+        android:textColor="@color/of_shade2"
         android:id="@+id/post_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,8 +40,8 @@
         android:id="@+id/btn_post"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="70dp"
         android:layout_marginBottom="2dp"
         android:text="@string/btn_post"
         app:layout_constraintBottom_toTopOf="@+id/btn_post_cancel"
@@ -58,9 +59,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btn_post"
         app:layout_constraintStart_toStartOf="@+id/btn_post"
-        android:backgroundTint="#D13148"/>
+        android:backgroundTint="@color/alert_red"/>
 
     <EditText
+        android:textColor="@color/black"
         android:id="@+id/et_post_content"
         android:layout_width="0dp"
         android:layout_height="0dp"
