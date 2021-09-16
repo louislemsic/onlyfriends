@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import ph.com.onlyfriends.models.Collections
 
-class ProfileActivity : AppCompatActivity() {
+class SearchProfileActivity : AppCompatActivity() {
 
     private var user: FirebaseUser = FirebaseAuth.getInstance().currentUser!!
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
@@ -31,7 +31,7 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        setContentView(R.layout.activity_search_profile)
 
         this.tvName = findViewById(R.id.tv_profile_name)
         this.tvHandle = findViewById(R.id.tv_profile_handle)

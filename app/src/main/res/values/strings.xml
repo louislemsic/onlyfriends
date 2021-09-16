@@ -26,7 +26,7 @@
     <string name="sample_person_name">Loading…</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="iv_my_pfp">the PFP of the user</string>
-    <string name="my_profile">My Profile</string>
+    <string name="my_profile">Hi I\'m err…</string>
     <string name="fab_add_post">The button that adds post</string>
     <string name="tv_post_content">This is where you should see the magic. Please wait.</string>
     <string name="post_title">Tell Us What is Happening</string>
@@ -37,7 +37,8 @@
     <string name="tv_settings_bio">You might want to know me more…</string>
     <string name="btn_edit_profile">Edit Profile</string>
     <string name="tv_followers">0</string>
-    <string name="tv_settings_bio_placeholder">Usually this shows what\'s interesting about you but it\'s not appearing. Wait let me fix it.</string>
+    <string name="tv_settings_bio_placeholder">Usually this shows what\'s interesting about me but it\'s not appearing. Wait let me fix it.</string>
     <string name="sign_out_title">Wait, were you thinking of leaving? Can\'t we talk this one out?</string>
     <string name="bio_empty">You don\'t even have a bio! Weird. Go tap that Edit Profile, to have one!</string>
+    <string name="what_s_interesting_about_me">What\'s interesting about me?</string>
 </resources>
