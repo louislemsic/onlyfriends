@@ -81,7 +81,6 @@ class SearchProfileActivity : AppCompatActivity() {
                 pushFollowing()
             else
                 popFollowing()
-            updateButton()
         })
     }
 
@@ -112,33 +111,41 @@ class SearchProfileActivity : AppCompatActivity() {
         val map: MutableMap<String, Boolean> = HashMap()
         map[followUid] = true
 
-        ref.child("following").updateChildren(map as Map<String, Boolean>)
+        ref.child("following").updateChildren(map as Map<String, Boolean>).addOnCompleteListener {
+            if(it.isSuccessful) {
+                Log.d("position", "push")
+                updateFollowingCount()
+            }
+            else {
+                Log.d("increment", "failed")
+            }
+        }
 
-        updateFollowingCount(1)
+
     }
 
     private fun popFollowing() {
         val uid = user.uid
 
-        db.getReference("Friends/$uid/following").child(followUid).setValue(null)
-
-        updateFollowingCount(-1)
+        db.getReference("Friends/$uid/following").child(followUid).setValue(null).addOnCompleteListener {
+            if(it.isSuccessful) {
+                Log.d("position", "pop")
+                updateFollowingCount()
+            }
+            else {
+                Log.d("increment", "failed")
+            }
+        }
     }
 
-    private fun updateFollowingCount(inc: Int) {
+    private fun updateFollowingCount() {
         db.reference.child(Collections.Friends.name)
-            .child(user.uid).child("numFollowing").addValueEventListener(object:
+            .child(user.uid).child("following").addValueEventListener(object:
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var x: Int = 0
-
-                    for(following in snapshot.children) {
-                        x = following.value as Int
-                    }
-
                     val uid = user.uid
-                    db.getReference("Friends/$uid/numFollowing").setValue(x + inc)
-                    Log.d("incrementtt", "success")
+                    db.getReference("Friends/$uid/numFollowing").setValue(snapshot.childrenCount)
+                    updateButton()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
