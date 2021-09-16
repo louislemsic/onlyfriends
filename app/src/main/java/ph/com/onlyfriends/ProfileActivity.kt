@@ -112,15 +112,38 @@ class ProfileActivity : AppCompatActivity() {
         val map: MutableMap<String, Boolean> = HashMap()
         map[followUid] = true
 
-
         ref.child("following").updateChildren(map as Map<String, Boolean>)
+
+        updateFollowingCount(1)
     }
 
     private fun popFollowing() {
-        Log.d("pop", "working")
-
         val uid = user.uid
 
         db.getReference("Friends/$uid/following").child(followUid).setValue(null)
+
+        updateFollowingCount(-1)
+    }
+
+    private fun updateFollowingCount(inc: Int) {
+        db.reference.child(Collections.Friends.name)
+            .child(user.uid).child("numFollowing").addValueEventListener(object:
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var x: Int = 0
+
+                    for(following in snapshot.children) {
+                        x = following.value as Int
+                    }
+
+                    val uid = user.uid
+                    db.getReference("Friends/$uid/numFollowing").setValue(x + inc)
+                    Log.d("incrementtt", "success")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Error", error.toString())
+                }
+            })
     }
 }
