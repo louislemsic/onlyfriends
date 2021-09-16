@@ -6,10 +6,10 @@ open class Friend(_email: String = "", _name: String = "", _handle: String = "")
     var name: String = _name
     var handle: String = "@$_handle"
     var bio: String = ""
-    var following: MutableMap<String, String> = HashMap()
+    var following: MutableMap<String, Boolean> = HashMap()
     var numFollowers: Int = 1
 
-    init {
-        following[handle] = name
+    open fun setUid(uid: String) {
+        following[uid] = true
     }
 }

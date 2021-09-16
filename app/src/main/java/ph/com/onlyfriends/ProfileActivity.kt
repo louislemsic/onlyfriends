@@ -2,6 +2,7 @@ package ph.com.onlyfriends
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var handle: String
     private var isFollowed: Boolean = false
 
+    private lateinit var followUid: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -35,6 +38,7 @@ class ProfileActivity : AppCompatActivity() {
         this.btnFollow = findViewById(R.id.btn_profile_follow)
 
         getIntentData()
+        getUserProfile()
     }
 
     private fun getIntentData() {
@@ -49,15 +53,17 @@ class ProfileActivity : AppCompatActivity() {
         this.btnFollow.text = if(isFollowed) "unfollow" else "follow"
     }
 
-    private fun initUser() {
+    private fun getUserProfile() {
 
         db.reference.child(Collections.Friends.name).addValueEventListener(object:
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (friend in snapshot.children) {
-                    if (friend.key == user.uid) {
-                        tvName.text = friend.child("name").value.toString()
-                        tvHandle.text = friend.child("handle").value.toString()
+                    if (friend.child("name").value.toString() == name) {
+                        followUid = friend.key.toString()
+                        Log.d("following", followUid)
+                        initListeners()
+                        updateButton()
                     }
                 }
             }
@@ -67,5 +73,54 @@ class ProfileActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    private fun initListeners() {
+        this.btnFollow.setOnClickListener(View.OnClickListener {
+            if(btnFollow.text.toString() == "follow")
+                pushFollowing()
+            else
+                popFollowing()
+            updateButton()
+        })
+    }
+
+    private fun updateButton() {
+        db.reference.child(Collections.Friends.name)
+            .child(user.uid).child("following").addValueEventListener(object:
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var isFollowing: Boolean = false
+
+                for (following in snapshot.children)
+                    if(following.key.toString() == followUid)
+                        isFollowing = true
+
+                btnFollow.text = if(isFollowing) "unfollow" else "follow"
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.toString())
+            }
+        })
+    }
+
+    private fun pushFollowing() {
+        val uid = user.uid
+        val ref = db.getReference("Friends/$uid")
+
+        val map: MutableMap<String, Boolean> = HashMap()
+        map[followUid] = true
+
+
+        ref.child("following").updateChildren(map as Map<String, Boolean>)
+    }
+
+    private fun popFollowing() {
+        Log.d("pop", "working")
+
+        val uid = user.uid
+
+        db.getReference("Friends/$uid/following").child(followUid).setValue(null)
     }
 }

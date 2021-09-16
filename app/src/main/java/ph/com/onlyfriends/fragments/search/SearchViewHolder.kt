@@ -31,7 +31,7 @@ open class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
             intent.putExtra(Keys.NAME.name, model.name)
             intent.putExtra(Keys.HANDLE.name, model.handle)
-            intent.putExtra(Keys.ISFOLLOWED.name, "true")
+            intent.putExtra(Keys.ISFOLLOWED.name, "false")
 
             itemView.context.startActivity(intent)
         }
