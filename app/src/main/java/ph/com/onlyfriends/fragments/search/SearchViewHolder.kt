@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import ph.com.onlyfriends.Keys
-import ph.com.onlyfriends.ProfileActivity
+import ph.com.onlyfriends.SearchProfileActivity
 import ph.com.onlyfriends.R
 import ph.com.onlyfriends.models.Friend
 
@@ -26,7 +26,7 @@ open class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         clLayout.setOnClickListener {
             val intent = Intent(
                 itemView.context,
-                ProfileActivity::class.java
+                SearchProfileActivity::class.java
             )
 
             intent.putExtra(Keys.NAME.name, model.name)

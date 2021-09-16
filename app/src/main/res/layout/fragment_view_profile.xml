@@ -94,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="19dp"
-            android:text="@string/tv_settings_bio"
+            android:text="@string/what_s_interesting_about_me"
             android:textColor="@color/of_main"
             android:textSize="16sp"
             android:textStyle="bold"
