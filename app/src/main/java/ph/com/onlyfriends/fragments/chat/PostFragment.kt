@@ -34,6 +34,7 @@ class PostFragment : Fragment() {
 
     private var userName: String = ""
     private var userHandle: String = ""
+    private var flag: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,8 +50,8 @@ class PostFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
-        rvPosts.adapter?.notifyDataSetChanged()
+        if(flag)
+            loadPosts(postList)
     }
 
     private fun initializeComponents(view: View) {
@@ -64,6 +65,7 @@ class PostFragment : Fragment() {
         fab.setOnClickListener {
             val intent = Intent(activity, AddPostActivity::class.java)
             activity?.startActivity(intent)
+            this.flag = true
         }
 
 
