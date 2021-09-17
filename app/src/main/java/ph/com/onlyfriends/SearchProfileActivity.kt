@@ -61,7 +61,7 @@ class SearchProfileActivity : AppCompatActivity() {
 
                     if (ds.child("uid").value.toString() ==  followUid) {
                         val content = ds.child("pcontent").value.toString()
-                        postList.add(Post(Post.POST, name, handle, content))
+                        postList.add(Post(name, handle, content))
                     }
 
                 }

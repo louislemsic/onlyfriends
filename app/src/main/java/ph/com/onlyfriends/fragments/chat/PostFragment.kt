@@ -19,6 +19,7 @@ import ph.com.onlyfriends.AddPostActivity
 import ph.com.onlyfriends.R
 import ph.com.onlyfriends.models.Collections
 import ph.com.onlyfriends.models.Post
+import ph.com.onlyfriends.models.Whitelist
 
 class PostFragment : Fragment() {
 
@@ -54,11 +55,11 @@ class PostFragment : Fragment() {
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
-                    val whitelisted: ArrayList<Post> = ArrayList()
+                    val whitelisted: ArrayList<Whitelist> = ArrayList()
                     val name: String = snapshot.child("name").value.toString()
                     val handle: String  = snapshot.child("handle").value.toString()
 
-                    whitelisted.add(Post(Post.WHITELIST, name, handle, user.uid))
+                    whitelisted.add(Whitelist(name, handle, user.uid))
 
                     if (Integer.parseInt(snapshot.child("numFollowing").value.toString()) > 0) {
 
@@ -108,11 +109,11 @@ class PostFragment : Fragment() {
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                val whitelisted: ArrayList<Post> = ArrayList()
+                val whitelisted: ArrayList<Whitelist> = ArrayList()
                 val name: String = snapshot.child("name").value.toString()
                 val handle: String  = snapshot.child("handle").value.toString()
 
-                whitelisted.add(Post(Post.WHITELIST, name, handle, user.uid))
+                whitelisted.add(Whitelist(name, handle, user.uid))
 
                 if (Integer.parseInt(snapshot.child("numFollowing").value.toString()) > 0) {
 
@@ -125,6 +126,9 @@ class PostFragment : Fragment() {
 
                     finalizeWhitelist(whitelisted, finalList)
                 }
+                else {
+                    loadPosts(whitelisted)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -133,7 +137,7 @@ class PostFragment : Fragment() {
         })
     }
 
-    private fun finalizeWhitelist(whitelisted: ArrayList<Post>, UIDList: ArrayList<String>) {
+    private fun finalizeWhitelist(whitelisted: ArrayList<Whitelist>, UIDList: ArrayList<String>) {
 
         db.reference.child(Collections.Friends.name).addListenerForSingleValueEvent(object:
             ValueEventListener {
@@ -143,7 +147,7 @@ class PostFragment : Fragment() {
                         if (person == snap.key.toString()) {
                             val name = snap.child("name").value.toString()
                             val handle = snap.child("handle").value.toString()
-                            whitelisted.add(Post(Post.WHITELIST, name, handle, person))
+                            whitelisted.add(Whitelist(name, handle, person))
                             break
                         }
                     }
@@ -159,7 +163,7 @@ class PostFragment : Fragment() {
         })
     }
 
-    private fun loadPosts(whitelisted: ArrayList<Post>) {
+    private fun loadPosts(whitelisted: ArrayList<Whitelist>) {
         // path of posts
         val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
 
@@ -174,7 +178,7 @@ class PostFragment : Fragment() {
                             val name = whitelist.uName
                             val handle = whitelist.uHandle
                             val content = ds.child("pcontent").value.toString()
-                            postList.add(Post(Post.POST, name, handle, content))
+                            postList.add(Post(name, handle, content))
                         }
                     }
                 }

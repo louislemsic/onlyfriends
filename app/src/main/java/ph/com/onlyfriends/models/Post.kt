@@ -1,39 +1,9 @@
 package ph.com.onlyfriends.models
 
-class Post() {
+class Post(name: String = "", handle: String = "", content: String = "") {
 
-    var uName: String? = null
-    var uHandle: String? = null
-    var pContent: String? = null
-    var uid: String? = null
+    var uName: String = name
+    var uHandle: String = handle
+    var pContent: String = content
 
-    constructor(type: Int, _pContent: String, _uid: String) : this() {
-        when (type) {
-            DATABASE -> {
-                pContent = _pContent
-                uid = _uid
-            }
-        }
-    }
-
-    constructor(type: Int, s1: String, s2: String, s3: String) : this() {
-        when (type) {
-            POST -> {
-                uName = s1
-                uHandle = s2
-                pContent = s3
-            }
-            WHITELIST -> {
-                uName = s1
-                uHandle = s2
-                uid = s3
-            }
-        }
-    }
-
-    companion object {
-        const val POST = 1
-        const val DATABASE = 2
-        const val WHITELIST = 3
-    }
 }
