@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ph.com.onlyfriends.fragments.chat.PostFragment
+import ph.com.onlyfriends.fragments.notifications.NotificationFragment
 import ph.com.onlyfriends.fragments.search.SearchFragment
 import ph.com.onlyfriends.fragments.profile.ViewProfileFragment
 
@@ -42,6 +43,10 @@ class HomeActivity : AppCompatActivity() {
                 }
                 R.id.nav_search -> {    //Search for other locations Fragment
                     loadFragment(SearchFragment())
+                    return@setOnItemSelectedListener true
+                }
+                R.id.nav_notifications -> {
+                    loadFragment(NotificationFragment())
                     return@setOnItemSelectedListener true
                 }
                 R.id.nav_settings -> {  //Settings Fragment

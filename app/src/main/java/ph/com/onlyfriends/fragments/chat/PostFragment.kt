@@ -52,6 +52,7 @@ class PostFragment : Fragment() {
 
         rvPosts.adapter?.notifyDataSetChanged()
     }
+
     private fun initializeComponents(view: View) {
 
         pb = view.findViewById(R.id.pb_fragment_post)
