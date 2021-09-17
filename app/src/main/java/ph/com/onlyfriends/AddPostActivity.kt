@@ -1,10 +1,8 @@
 package ph.com.onlyfriends
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -24,12 +22,7 @@ class AddPostActivity : AppCompatActivity() {
     // firebase
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var db: DatabaseReference
-
-    // user information
-    private lateinit var email: String
-    private lateinit var name: String
-    private lateinit var handle: String
-    private lateinit var uid: String
+    private lateinit var user: FirebaseUser
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,23 +31,10 @@ class AddPostActivity : AppCompatActivity() {
 
         // firebase authentication
         firebaseAuth = FirebaseAuth.getInstance()
-        checkUserStatus()
+        user = firebaseAuth.currentUser!!
 
         // get data from db
         db = FirebaseDatabase.getInstance().getReference("Friends")
-        val query: Query = db.orderByChild("email").equalTo(email)
-        query.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (ds: DataSnapshot in snapshot.children) {
-                    name = "" + ds.child("name").value
-                    handle = "" + ds.child("handle").value
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Error", error.message)
-            }
-        })
 
         // initialize views
         ivOnlyfriends = findViewById(R.id.iv_onlyfriends_logo2)
@@ -83,48 +63,22 @@ class AddPostActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        checkUserStatus()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkUserStatus()
-    }
-
     private fun uploadData(content: String) {
 
         val timestamp: String = String.format(System.currentTimeMillis().toString())
 
-        val model = Post(name, handle, content, uid)
+        val model = Post(Post.DATABASE, content, user.uid)
 
         // path to store data
         val ref: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
 
         ref.child(timestamp).setValue(model)
             .addOnSuccessListener {
-            // reset views
+                // reset views
                 etPostContent.setText("")
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 Toast.makeText(this, ""+it.message, Toast.LENGTH_SHORT).show()
             }
-
-    }
-
-    private fun checkUserStatus() {
-        val user: FirebaseUser? = firebaseAuth.currentUser
-        if (user != null) {
-            // user is signed in stay in this activity
-            email = user.email.toString()
-            uid = user.uid
-        }
-        else {
-            // User not signed in, go to login activity
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
     }
 }

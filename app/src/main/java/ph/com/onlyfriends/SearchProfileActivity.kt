@@ -2,10 +2,8 @@ package ph.com.onlyfriends
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -63,7 +61,7 @@ class SearchProfileActivity : AppCompatActivity() {
 
                     if (ds.child("uid").value.toString() ==  followUid) {
                         val content = ds.child("pcontent").value.toString()
-                        postList.add(Post(name, handle, content))
+                        postList.add(Post(Post.POST, name, handle, content))
                     }
 
                 }
@@ -133,12 +131,12 @@ class SearchProfileActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-        this.btnFollow.setOnClickListener(View.OnClickListener {
+        this.btnFollow.setOnClickListener {
             if(btnFollow.text.toString() == "follow")
                 pushFollowing()
             else
                 popFollowing()
-        })
+        }
     }
 
     private fun updateButton() {
@@ -146,7 +144,7 @@ class SearchProfileActivity : AppCompatActivity() {
             .child(user.uid).child("following").addListenerForSingleValueEvent(object:
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                var isFollowing: Boolean = false
+                var isFollowing = false
 
                 for (following in snapshot.children)
                     if(following.key.toString() == followUid)

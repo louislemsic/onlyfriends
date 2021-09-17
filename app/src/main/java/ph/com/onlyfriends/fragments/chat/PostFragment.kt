@@ -53,18 +53,23 @@ class PostFragment : Fragment() {
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
-                    val whitelisted: ArrayList<String> = ArrayList()
-                    whitelisted.add(user.uid)
+                    val whitelisted: ArrayList<Post> = ArrayList()
+                    val name: String = snapshot.child("name").value.toString()
+                    val handle: String  = snapshot.child("handle").value.toString()
+
+                    whitelisted.add(Post(Post.WHITELIST, name, handle, user.uid))
 
                     if (Integer.parseInt(snapshot.child("numFollowing").value.toString()) > 0) {
-                        val followList: Map<*, *> = snapshot.child("following").value as Map<*, *>
 
-                        for (following in followList) {
-                            whitelisted.add(following.key.toString())
+                        val rawList: Map<*, *> = snapshot.child("following").value as Map<*, *>
+                        val finalList: ArrayList<String> = ArrayList()
+
+                        for(following in rawList) {
+                            finalList.add(following.key.toString())
                         }
-                    }
 
-                    loadPosts(postList, whitelisted)
+                        finalizeWhitelist(whitelisted, finalList)
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -101,18 +106,23 @@ class PostFragment : Fragment() {
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                val whitelisted: ArrayList<String> = ArrayList()
-                whitelisted.add(user.uid)
+                val whitelisted: ArrayList<Post> = ArrayList()
+                val name: String = snapshot.child("name").value.toString()
+                val handle: String  = snapshot.child("handle").value.toString()
+
+                whitelisted.add(Post(Post.WHITELIST, name, handle, user.uid))
 
                 if (Integer.parseInt(snapshot.child("numFollowing").value.toString()) > 0) {
-                    val followList: Map<*, *> = snapshot.child("following").value as Map<*, *>
 
-                    for (following in followList) {
-                        whitelisted.add(following.key.toString())
+                    val rawList: Map<*, *> = snapshot.child("following").value as Map<*, *>
+                    val finalList: ArrayList<String> = ArrayList()
+
+                    for(following in rawList) {
+                        finalList.add(following.key.toString())
                     }
-                }
 
-                loadPosts(postList, whitelisted)
+                    finalizeWhitelist(whitelisted, finalList)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -121,7 +131,33 @@ class PostFragment : Fragment() {
         })
     }
 
-    private fun loadPosts(postList: ArrayList<Post>, whitelisted: ArrayList<String>) {
+    private fun finalizeWhitelist(whitelisted: ArrayList<Post>, UIDList: ArrayList<String>) {
+
+        db.reference.child(Collections.Friends.name).addListenerForSingleValueEvent(object:
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (person in UIDList) {
+                    for (snap in snapshot.children) {
+                        if (person == snap.key.toString()) {
+                            val name = snap.child("name").value.toString()
+                            val handle = snap.child("handle").value.toString()
+                            whitelisted.add(Post(Post.WHITELIST, name, handle, person))
+                            break
+                        }
+                    }
+                }
+
+                //Call to Load Posts of all Whitelisted
+                loadPosts(whitelisted)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.toString())
+            }
+        })
+    }
+
+    private fun loadPosts(whitelisted: ArrayList<Post>) {
         // path of posts
         val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
 
@@ -131,11 +167,12 @@ class PostFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (ds: DataSnapshot in snapshot.children) {
                     for (whitelist in whitelisted) {
-                        if (ds.child("uid").value.toString() == whitelist) {
-                            val name = ds.child("uname").value.toString()
-                            val handle = ds.child("uhandle").value.toString()
+                        if (ds.child("uid").value.toString() == whitelist.uid) {
+
+                            val name = whitelist.uName
+                            val handle = whitelist.uHandle
                             val content = ds.child("pcontent").value.toString()
-                            postList.add(Post(name, handle, content))
+                            postList.add(Post(Post.POST, name, handle, content))
                         }
                     }
                 }
@@ -149,6 +186,5 @@ class PostFragment : Fragment() {
                 Toast.makeText(activity, ""+error.message, Toast.LENGTH_SHORT).show()
             }
         })
-
     }
 }
