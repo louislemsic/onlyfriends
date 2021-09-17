@@ -21,6 +21,7 @@ class SearchProfileActivity : AppCompatActivity() {
 
     private lateinit var tvName: TextView
     private lateinit var tvHandle: TextView
+    private lateinit var tvFollowerCount: TextView
     private lateinit var btnFollow: Button
 
     private lateinit var name: String
@@ -33,6 +34,7 @@ class SearchProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_profile)
 
+        this.tvFollowerCount = findViewById(R.id.tv_search_followers)
         this.tvName = findViewById(R.id.tv_profile_name)
         this.tvHandle = findViewById(R.id.tv_profile_handle)
         this.btnFollow = findViewById(R.id.btn_profile_follow)
@@ -55,13 +57,14 @@ class SearchProfileActivity : AppCompatActivity() {
 
     private fun getUserProfile() {
 
-        db.reference.child(Collections.Friends.name).addValueEventListener(object:
+        db.reference.child(Collections.Friends.name).addListenerForSingleValueEvent(object:
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (friend in snapshot.children) {
                     if (friend.child("name").value.toString() == name) {
                         followUid = friend.key.toString()
                         Log.d("following", followUid)
+                        tvFollowerCount.text = friend.child("numFollowers").value.toString()
                         initListeners()
                         updateButton()
                     }
@@ -73,6 +76,19 @@ class SearchProfileActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    private fun updateFollowerCount() {
+        db.reference.child(Collections.Friends.name).child(followUid).addListenerForSingleValueEvent(object:
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                tvFollowerCount.text = snapshot.child("numFollowers").value.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.toString())
+            }
+        })
     }
 
     private fun initListeners() {
@@ -114,7 +130,7 @@ class SearchProfileActivity : AppCompatActivity() {
         ref.child("following").updateChildren(map as Map<String, Boolean>).addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.d("position", "push")
-                updateFollowingCount()
+                updateFollowingCount(1)
             }
             else {
                 Log.d("increment", "failed")
@@ -130,7 +146,7 @@ class SearchProfileActivity : AppCompatActivity() {
         db.getReference("Friends/$uid/following").child(followUid).setValue(null).addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.d("position", "pop")
-                updateFollowingCount()
+                updateFollowingCount(-1)
             }
             else {
                 Log.d("increment", "failed")
@@ -138,19 +154,36 @@ class SearchProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFollowingCount() {
+    private fun updateFollowingCount(inc: Int) {
         db.reference.child(Collections.Friends.name)
-            .child(user.uid).child("following").addValueEventListener(object:
+            .child(user.uid).child("following").addListenerForSingleValueEvent(object:
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val uid = user.uid
                     db.getReference("Friends/$uid/numFollowing").setValue(snapshot.childrenCount)
-                    updateButton()
+                    updateFollowerCount(inc)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("Error", error.toString())
                 }
             })
+    }
+
+    private fun updateFollowerCount(inc: Int) {
+        db.reference.child(Collections.Friends.name).child(followUid).addListenerForSingleValueEvent(object:
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var numFollowers = snapshot.child("numFollowers").value as Long
+                numFollowers += inc
+                db.reference.child(Collections.Friends.name).child(user.uid).child("numFollowers").setValue(numFollowers)
+                updateButton()
+                updateFollowerCount()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.toString())
+            }
+        })
     }
 }
