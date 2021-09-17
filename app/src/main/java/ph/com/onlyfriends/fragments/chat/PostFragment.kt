@@ -50,7 +50,6 @@ class PostFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if(flag) {
-            pb.visibility = View.VISIBLE
             db.reference.child(Collections.Friends.name).child(user.uid).addListenerForSingleValueEvent(object:
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -72,6 +71,10 @@ class PostFragment : Fragment() {
 
                         finalizeWhitelist(whitelisted, finalList)
                     }
+                    else {
+                        loadPosts(whitelisted)
+                    }
+
                     pb.visibility = View.GONE
                 }
 
