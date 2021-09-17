@@ -136,8 +136,8 @@ class PostFragment : Fragment() {
             db.reference.child(Collections.Friends.name).child(following.key.toString()).addListenerForSingleValueEvent(object:
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var name = snapshot.child("name").value.toString()
-                    var handle = snapshot.child("handle").value.toString()
+                    val name = snapshot.child("name").value.toString()
+                    val handle = snapshot.child("handle").value.toString()
 
                     getPostsFollowing(following.key.toString(), name, handle)
                     rvPosts.adapter = AdapterPosts(postList)
@@ -148,7 +148,7 @@ class PostFragment : Fragment() {
                 }
             })
         }
-        pb.visibility = View.GONE
+
     }
 
     private fun getPostsFollowing (uid: String, name: String, handle: String) {
@@ -162,6 +162,8 @@ class PostFragment : Fragment() {
                         postList.add(Post(name, handle, content))
                     }
                 }
+                rvPosts.adapter?.notifyDataSetChanged()
+                pb.visibility = View.GONE
             }
 
             override fun onCancelled(error: DatabaseError) {
