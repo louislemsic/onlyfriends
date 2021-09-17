@@ -120,8 +120,14 @@ class PostFragment : Fragment() {
         db.reference.child(Collections.Friends.name).child(user.uid).addListenerForSingleValueEvent(object:
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val followList: Map<*, *> = snapshot.child("following").value as Map<*, *>
-                getNameFollowing(followList)
+
+                if (Integer.parseInt(snapshot.child("numFollowing").value.toString()) > 0) {
+                    val followList: Map<*, *> = snapshot.child("following").value as Map<*, *>
+                    getNameFollowing(followList)
+                }
+                else {
+                    pb.visibility = View.GONE
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
