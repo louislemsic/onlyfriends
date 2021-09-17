@@ -48,6 +48,11 @@ class PostFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        rvPosts.adapter?.notifyDataSetChanged()
+    }
     private fun initializeComponents(view: View) {
 
         pb = view.findViewById(R.id.pb_fragment_post)
@@ -59,9 +64,17 @@ class PostFragment : Fragment() {
         fab.setOnClickListener {
             val intent = Intent(activity, AddPostActivity::class.java)
             activity?.startActivity(intent)
-
-//            rvPosts.adapter?.notifyItemInserted(0)
         }
+
+
+        // recycler view and adapter
+        rvPosts = view.findViewById(R.id.rv_posts)
+        rvPosts.layoutManager = LinearLayoutManager(this.context)
+        postList = arrayListOf()
+
+        // show new posts first
+        (rvPosts.layoutManager as LinearLayoutManager).stackFromEnd = true
+        (rvPosts.layoutManager as LinearLayoutManager).reverseLayout = true
 
         db.reference.child(Collections.Friends.name).child(user.uid).addListenerForSingleValueEvent(object:
             ValueEventListener {
@@ -76,18 +89,6 @@ class PostFragment : Fragment() {
                 Log.e("Error", error.toString())
             }
         })
-
-        // recycler view and adapter
-        rvPosts = view.findViewById(R.id.rv_posts)
-        rvPosts.layoutManager = LinearLayoutManager(this.context)
-        postList = arrayListOf()
-
-        // show new posts first
-        (rvPosts.layoutManager as LinearLayoutManager).stackFromEnd = true
-        (rvPosts.layoutManager as LinearLayoutManager).reverseLayout = true
-
-
-
     }
 
     private fun loadPosts(postList: ArrayList<Post>) {
