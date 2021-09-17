@@ -54,27 +54,27 @@ class SearchProfileActivity : AppCompatActivity() {
         // path of posts
         val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
 
-        // get all data from the ref
-        dbRef.addValueEventListener(object: ValueEventListener {
+        postList.clear()
+
+        dbRef.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                postList.clear()
 
                 for (ds: DataSnapshot in snapshot.children) {
-                    val modelPost: Post? = ds.getValue(Post::class.java)
 
-
-                    if (modelPost != null && modelPost.uHandle == handle) {
-                        postList.add(modelPost)
+                    if (ds.child("uid").value.toString() ==  followUid) {
+                        val content = ds.child("pcontent").value.toString()
+                        postList.add(Post(name, handle, content))
                     }
-                    rvPosts.adapter = AdapterPosts(postList)
+
                 }
+                rvPosts.adapter = AdapterPosts(postList)
+
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // in case there is an error
-                Toast.makeText(this@SearchProfileActivity, ""+error.message, Toast.LENGTH_SHORT).show()
             }
         })
+
     }
 
     private fun initRecyclerView() {
