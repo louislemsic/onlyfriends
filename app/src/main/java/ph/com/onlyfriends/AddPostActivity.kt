@@ -9,7 +9,7 @@ import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import ph.com.onlyfriends.models.PostModelDatabase
+import ph.com.onlyfriends.models.Post
 
 class AddPostActivity : AppCompatActivity() {
 
@@ -97,7 +97,7 @@ class AddPostActivity : AppCompatActivity() {
 
         val timestamp: String = String.format(System.currentTimeMillis().toString())
 
-        val model = PostModelDatabase(uid, content)
+        val model = Post(name, handle, content, uid)
 
         // path to store data
         val ref: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")

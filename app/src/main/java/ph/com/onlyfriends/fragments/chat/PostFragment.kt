@@ -32,8 +32,6 @@ class PostFragment : Fragment() {
     private lateinit var db: FirebaseDatabase // Firebase Realtime Database
     private lateinit var user: FirebaseUser
 
-    private var userName: String = ""
-    private var userHandle: String = ""
     private var flag: Boolean = false
 
     override fun onCreateView(
@@ -50,8 +48,30 @@ class PostFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(flag)
-            loadPosts(postList)
+        if(flag) {
+            db.reference.child(Collections.Friends.name).child(user.uid).addListenerForSingleValueEvent(object:
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    val whitelisted: ArrayList<String> = ArrayList()
+                    whitelisted.add(user.uid)
+
+                    if (Integer.parseInt(snapshot.child("numFollowing").value.toString()) > 0) {
+                        val followList: Map<*, *> = snapshot.child("following").value as Map<*, *>
+
+                        for (following in followList) {
+                            whitelisted.add(following.key.toString())
+                        }
+                    }
+
+                    loadPosts(postList, whitelisted)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Error", error.toString())
+                }
+            })
+        }
     }
 
     private fun initializeComponents(view: View) {
@@ -68,7 +88,6 @@ class PostFragment : Fragment() {
             this.flag = true
         }
 
-
         // recycler view and adapter
         rvPosts = view.findViewById(R.id.rv_posts)
         rvPosts.layoutManager = LinearLayoutManager(this.context)
@@ -81,10 +100,19 @@ class PostFragment : Fragment() {
         db.reference.child(Collections.Friends.name).child(user.uid).addListenerForSingleValueEvent(object:
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                userName = snapshot.child("name").value.toString()
-                userHandle = snapshot.child("handle").value.toString()
-                Log.d("MESSAGE1: ", "\n$userName, $userHandle\n")
-                loadPosts(postList)
+
+                val whitelisted: ArrayList<String> = ArrayList()
+                whitelisted.add(user.uid)
+
+                if (Integer.parseInt(snapshot.child("numFollowing").value.toString()) > 0) {
+                    val followList: Map<*, *> = snapshot.child("following").value as Map<*, *>
+
+                    for (following in followList) {
+                        whitelisted.add(following.key.toString())
+                    }
+                }
+
+                loadPosts(postList, whitelisted)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -93,7 +121,7 @@ class PostFragment : Fragment() {
         })
     }
 
-    private fun loadPosts(postList: ArrayList<Post>) {
+    private fun loadPosts(postList: ArrayList<Post>, whitelisted: ArrayList<String>) {
         // path of posts
         val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
 
@@ -102,75 +130,16 @@ class PostFragment : Fragment() {
         dbRef.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (ds: DataSnapshot in snapshot.children) {
-                    if (ds.child("uid").value.toString() ==  user.uid) {
-                        val content = ds.child("pcontent").value.toString()
-                        postList.add(Post(userName, userHandle, content))
+                    for (whitelist in whitelisted) {
+                        if (ds.child("uid").value.toString() == whitelist) {
+                            val name = ds.child("uname").value.toString()
+                            val handle = ds.child("uhandle").value.toString()
+                            val content = ds.child("pcontent").value.toString()
+                            postList.add(Post(name, handle, content))
+                        }
                     }
                 }
-                getFollowing()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // in case there is an error
-                Toast.makeText(activity, ""+error.message, Toast.LENGTH_SHORT).show()
-            }
-        })
-
-    }
-
-    private fun getFollowing() {
-
-        db.reference.child(Collections.Friends.name).child(user.uid).addListenerForSingleValueEvent(object:
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                if (Integer.parseInt(snapshot.child("numFollowing").value.toString()) > 0) {
-                    val followList: Map<*, *> = snapshot.child("following").value as Map<*, *>
-                    getNameFollowing(followList)
-                }
-                else {
-                    pb.visibility = View.GONE
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Error", error.toString())
-            }
-        })
-    }
-
-    private fun getNameFollowing(followList: Map<*,*>) {
-
-        for (following in followList) {
-            db.reference.child(Collections.Friends.name).child(following.key.toString()).addListenerForSingleValueEvent(object:
-                ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val name = snapshot.child("name").value.toString()
-                    val handle = snapshot.child("handle").value.toString()
-
-                    getPostsFollowing(following.key.toString(), name, handle)
-                    rvPosts.adapter = AdapterPosts(postList)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("Error", error.toString())
-                }
-            })
-        }
-
-    }
-
-    private fun getPostsFollowing (uid: String, name: String, handle: String) {
-        val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
-
-        dbRef.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (ds: DataSnapshot in snapshot.children) {
-                    if (ds.child("uid").value.toString() ==  uid) {
-                        val content = ds.child("pcontent").value.toString()
-                        postList.add(Post(name, handle, content))
-                    }
-                }
+                rvPosts.adapter = AdapterPosts(postList)
                 rvPosts.adapter?.notifyDataSetChanged()
                 pb.visibility = View.GONE
             }
@@ -180,6 +149,6 @@ class PostFragment : Fragment() {
                 Toast.makeText(activity, ""+error.message, Toast.LENGTH_SHORT).show()
             }
         })
-    }
 
+    }
 }

@@ -1,8 +1,22 @@
 package ph.com.onlyfriends.models
 
-class Post(_name: String = "", _handle: String = "", _pContent: String = "") {
+class Post() {
 
-    var uName: String = _name
-    var uHandle: String = _handle
-    var pContent: String = _pContent
+    var uName: String = ""
+    var uHandle: String = ""
+    var pContent: String = ""
+    var uid: String = ""
+
+    constructor(_name: String, _handle: String, _pContent: String, _uid: String) : this() {
+        uName = _name
+        uHandle = _handle
+        pContent = _pContent
+        uid = _uid
+    }
+
+    constructor(_name: String, _handle: String, _pContent: String) : this() {
+        uName = _name
+        uHandle = _handle
+        pContent = _pContent
+    }
 }
