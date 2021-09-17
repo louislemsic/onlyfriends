@@ -58,7 +58,7 @@ class ViewProfileFragment : Fragment() {
                     if (friend.key == user.uid) {
                         myName.text = friend.child("name").value.toString()
                         myHandle.text = friend.child("handle").value.toString()
-                        myFollowersCount.text = friend.child("numFollowers").value.toString()
+                        myFollowersCount.text = friend.child("numFollowing").value.toString()
 
                         val bio: String = friend.child("bio").value.toString()
                         if(bio.isNotEmpty()) {

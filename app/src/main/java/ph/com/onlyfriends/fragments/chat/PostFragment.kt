@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ import ph.com.onlyfriends.models.Post
 class PostFragment : Fragment() {
 
     private lateinit var fab: FloatingActionButton
+    private lateinit var pb: ProgressBar
     private lateinit var rvPosts: RecyclerView
     private lateinit var postList: ArrayList<Post>
 
@@ -41,6 +43,7 @@ class PostFragment : Fragment() {
     @SuppressLint("ResourceType")
     private fun initializeComponents(view: View) {
 
+        pb = view.findViewById(R.id.pb_fragment_post)
         firebaseAuth = FirebaseAuth.getInstance()
         fab = view.findViewById(R.id.fab_add_post)
         fab.setOnClickListener {
@@ -77,6 +80,7 @@ class PostFragment : Fragment() {
                         postList.add(modelPost)
                     }
                     rvPosts.adapter = AdapterPosts(postList)
+                    pb.visibility = View.GONE
                 }
             }
 
