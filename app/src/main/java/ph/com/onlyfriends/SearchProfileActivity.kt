@@ -5,14 +5,16 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
+import ph.com.onlyfriends.fragments.chat.AdapterPosts
 import ph.com.onlyfriends.models.Collections
+import ph.com.onlyfriends.models.Post
 
 class SearchProfileActivity : AppCompatActivity() {
 
@@ -23,6 +25,9 @@ class SearchProfileActivity : AppCompatActivity() {
     private lateinit var tvHandle: TextView
     private lateinit var tvFollowerCount: TextView
     private lateinit var btnFollow: Button
+
+    private lateinit var rvPosts: RecyclerView
+    private lateinit var postList: ArrayList<Post>
 
     private lateinit var name: String
     private lateinit var handle: String
@@ -41,6 +46,42 @@ class SearchProfileActivity : AppCompatActivity() {
 
         getIntentData()
         getUserProfile()
+        initRecyclerView()
+        loadPosts(postList)
+    }
+
+    private fun loadPosts(postList: ArrayList<Post>) {
+        // path of posts
+        val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
+
+        // get all data from the ref
+        dbRef.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                postList.clear()
+
+                for (ds: DataSnapshot in snapshot.children) {
+                    val modelPost: Post? = ds.getValue(Post::class.java)
+
+
+                    if (modelPost != null && modelPost.uHandle == handle) {
+                        postList.add(modelPost)
+                    }
+                    rvPosts.adapter = AdapterPosts(postList)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // in case there is an error
+                Toast.makeText(this@SearchProfileActivity, ""+error.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun initRecyclerView() {
+        // recycler view and adapter
+        rvPosts = findViewById(R.id.rv_search_profile)
+        rvPosts.layoutManager = LinearLayoutManager(this)
+        postList = arrayListOf()
     }
 
     private fun getIntentData() {
@@ -78,7 +119,7 @@ class SearchProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun updateFollowerCount() {
+    private fun updateFollowersCount() {
         db.reference.child(Collections.Friends.name).child(followUid).addListenerForSingleValueEvent(object:
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -102,7 +143,7 @@ class SearchProfileActivity : AppCompatActivity() {
 
     private fun updateButton() {
         db.reference.child(Collections.Friends.name)
-            .child(user.uid).child("following").addValueEventListener(object:
+            .child(user.uid).child("following").addListenerForSingleValueEvent(object:
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var isFollowing: Boolean = false
@@ -160,8 +201,13 @@ class SearchProfileActivity : AppCompatActivity() {
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val uid = user.uid
-                    db.getReference("Friends/$uid/numFollowing").setValue(snapshot.childrenCount)
-                    updateFollowerCount(inc)
+                    db.getReference("Friends/$uid/numFollowing").setValue(snapshot.childrenCount).addOnCompleteListener {
+                        if(it.isSuccessful)
+                            updateFollowerCount(inc)
+                        else
+                            Log.d("updateFollowingCount", "error")
+                    }
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -176,9 +222,9 @@ class SearchProfileActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var numFollowers = snapshot.child("numFollowers").value as Long
                 numFollowers += inc
-                db.reference.child(Collections.Friends.name).child(user.uid).child("numFollowers").setValue(numFollowers)
+                db.reference.child(Collections.Friends.name).child(followUid).child("numFollowers").setValue(numFollowers)
                 updateButton()
-                updateFollowerCount()
+                updateFollowersCount()
             }
 
             override fun onCancelled(error: DatabaseError) {
