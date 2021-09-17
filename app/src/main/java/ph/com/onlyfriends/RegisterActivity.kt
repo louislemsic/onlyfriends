@@ -86,7 +86,6 @@ class RegisterActivity : AppCompatActivity() {
         // Register the Friend to the Firebase Authentication
         mAuth.createUserWithEmailAndPassword(friend.email, password).addOnCompleteListener { task ->
             if(task.isSuccessful) {
-                friend.setUid(mAuth.currentUser!!.uid)
                 // If successful in registering the email, place the information to Firebase Database
                 db.getReference(Collections.Friends.name).child(mAuth.currentUser!!.uid).setValue(friend).addOnCompleteListener {
                     if(it.isSuccessful) {
