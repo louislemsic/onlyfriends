@@ -57,9 +57,9 @@ class EditProfileActivity : AppCompatActivity() {
                         editDisplayName.setText(friend.child("name").value.toString())
                         editBio.setText(friend.child("bio").value.toString())
                         originalHandle = friend.child("handle").value.toString()
-                        originalHandle.replace("@", "")
+                        val finalHandle = originalHandle.replace("@", "")
 
-                        editHandle.setText(originalHandle)
+                        editHandle.setText(finalHandle)
                         isEditable(true)
                     }
                 }
