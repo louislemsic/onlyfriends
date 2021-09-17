@@ -48,7 +48,6 @@ class PostFragment : Fragment() {
         return view
     }
 
-    @SuppressLint("ResourceType")
     private fun initializeComponents(view: View) {
 
         pb = view.findViewById(R.id.pb_fragment_post)
@@ -60,6 +59,8 @@ class PostFragment : Fragment() {
         fab.setOnClickListener {
             val intent = Intent(activity, AddPostActivity::class.java)
             activity?.startActivity(intent)
+
+//            rvPosts.adapter?.notifyItemInserted(0)
         }
 
         db.reference.child(Collections.Friends.name).child(user.uid).addListenerForSingleValueEvent(object:

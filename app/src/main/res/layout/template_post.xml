@@ -26,13 +26,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
+            android:textStyle="bold"
             android:text="@string/handle_placeholder"
+            android:textColor="@color/of_shade2"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_post_dp"
             app:layout_constraintStart_toEndOf="@+id/tv_post_name"
             app:layout_constraintStart_toStartOf="@+id/tv_post_name" />
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/tv_post_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,6 +47,7 @@
             app:layout_constraintTop_toTopOf="@+id/tv_post_dp" />
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/tv_post_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
