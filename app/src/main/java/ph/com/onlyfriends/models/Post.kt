@@ -2,10 +2,10 @@ package ph.com.onlyfriends.models
 
 class Post() {
 
-    var uName: String = ""
-    var uHandle: String = ""
-    var pContent: String = ""
-    var uid: String = ""
+    var uName: String? = null
+    var uHandle: String? = null
+    var pContent: String? = null
+    var uid: String? = null
 
     constructor(type: Int, _pContent: String, _uid: String) : this() {
         when (type) {
