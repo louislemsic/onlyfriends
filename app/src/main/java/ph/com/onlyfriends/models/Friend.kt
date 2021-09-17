@@ -10,11 +10,4 @@ open class Friend(_email: String = "", _name: String = "", _handle: String = "")
     var numFollowing: Int = 0
     var numFollowers: Int = 0
 
-    init {
-        following["Activation"] = true
-    }
-
-    open fun setUid(uid: String) {
-        following[uid] = true
-    }
 }
