@@ -4,10 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import ph.com.onlyfriends.models.PostModelDatabase
 
 class AddPostActivity : AppCompatActivity() {
 
@@ -50,7 +52,7 @@ class AddPostActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                //Toast.makeText(this, ""+error.message, Toast.LENGTH_SHORT).show()
+                Log.e("Error", error.message)
             }
         })
 
@@ -67,7 +69,7 @@ class AddPostActivity : AppCompatActivity() {
             val content: String = etPostContent.text.toString().trim()
 
             if (TextUtils.isEmpty(content)) {
-                Toast.makeText(this, "Enter content...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Post should not be empty", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -95,21 +97,16 @@ class AddPostActivity : AppCompatActivity() {
 
         val timestamp: String = String.format(System.currentTimeMillis().toString())
 
-        val hashmap: HashMap<Any, String> = HashMap()
-
-        // put post info
-        hashmap["uid"] = uid
-        hashmap["uName"] = name
-        hashmap["uEmail"] = email
-        hashmap["uHandle"] = handle
-        hashmap["pContent"] = content
+        val model = PostModelDatabase(uid, content)
 
         // path to store data
         val ref: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
-        ref.child(timestamp).setValue(hashmap).addOnSuccessListener {
+
+        ref.child(timestamp).setValue(model)
+            .addOnSuccessListener {
             // reset views
-            etPostContent.setText("")
-        }
+                etPostContent.setText("")
+            }
             .addOnFailureListener{
                 Toast.makeText(this, ""+it.message, Toast.LENGTH_SHORT).show()
             }
