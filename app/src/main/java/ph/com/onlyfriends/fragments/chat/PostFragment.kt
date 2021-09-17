@@ -1,6 +1,5 @@
 package ph.com.onlyfriends.fragments.chat
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -99,19 +98,13 @@ class PostFragment : Fragment() {
 
         dbRef.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-
                 for (ds: DataSnapshot in snapshot.children) {
-
                     if (ds.child("uid").value.toString() ==  user.uid) {
                         val content = ds.child("pcontent").value.toString()
                         postList.add(Post(userName, userHandle, content))
-
-                        Log.d("MESSAGE: ", "\n$userName, $userHandle, $content\n")
                     }
-
                 }
-                rvPosts.adapter = AdapterPosts(postList)
-                pb.visibility = View.GONE
+                getFollowing()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -120,6 +113,62 @@ class PostFragment : Fragment() {
             }
         })
 
+    }
+
+    private fun getFollowing() {
+
+        db.reference.child(Collections.Friends.name).child(user.uid).addListenerForSingleValueEvent(object:
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val followList: Map<*, *> = snapshot.child("following").value as Map<*, *>
+                getNameFollowing(followList)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.toString())
+            }
+        })
+    }
+
+    private fun getNameFollowing(followList: Map<*,*>) {
+
+        for (following in followList) {
+            db.reference.child(Collections.Friends.name).child(following.key.toString()).addListenerForSingleValueEvent(object:
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var name = snapshot.child("name").value.toString()
+                    var handle = snapshot.child("handle").value.toString()
+
+                    getPostsFollowing(following.key.toString(), name, handle)
+                    rvPosts.adapter = AdapterPosts(postList)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Error", error.toString())
+                }
+            })
+        }
+        pb.visibility = View.GONE
+    }
+
+    private fun getPostsFollowing (uid: String, name: String, handle: String) {
+        val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Posts")
+
+        dbRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (ds: DataSnapshot in snapshot.children) {
+                    if (ds.child("uid").value.toString() ==  uid) {
+                        val content = ds.child("pcontent").value.toString()
+                        postList.add(Post(name, handle, content))
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // in case there is an error
+                Toast.makeText(activity, ""+error.message, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
 }
