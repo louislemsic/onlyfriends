@@ -1,14 +1,19 @@
 package ph.com.onlyfriends
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 import ph.com.onlyfriends.fragments.chat.PostFragment
 import ph.com.onlyfriends.fragments.notifications.NotificationFragment
 import ph.com.onlyfriends.fragments.search.SearchFragment
 import ph.com.onlyfriends.fragments.profile.ViewProfileFragment
+import ph.com.onlyfriends.models.notifs.FirebaseNotifService
 
 class HomeActivity : AppCompatActivity() {
 
@@ -30,6 +35,9 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        // Generate Token
+        generateToken()
 
         //Set ChatFragment as the Default Fragment
         loadFragment(PostFragment())
@@ -59,6 +67,28 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    /**
+     * generates token for logged in user
+     */
+    private fun generateToken() {
+        val notifHandler = FirebaseNotifService()
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            if (token != null) {
+                Log.d("token", token)
+                notifHandler.onNewToken(token)
+            }
+        })
     }
 
     /**

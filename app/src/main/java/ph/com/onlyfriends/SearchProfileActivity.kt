@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,10 @@ import com.google.firebase.database.*
 import ph.com.onlyfriends.fragments.chat.AdapterPosts
 import ph.com.onlyfriends.models.Collections
 import ph.com.onlyfriends.models.Post
+import ph.com.onlyfriends.models.notifs.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SearchProfileActivity : AppCompatActivity() {
 
@@ -29,9 +34,14 @@ class SearchProfileActivity : AppCompatActivity() {
 
     private lateinit var name: String
     private lateinit var handle: String
+    private lateinit var userHandle: String
     private var isFollowed: Boolean = false
 
     private lateinit var followUid: String
+
+    private var apiService = RetroFitClient
+        .getClient("https://fcm.googleapis.com/")
+        .create(APIService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,12 +111,16 @@ class SearchProfileActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (friend in snapshot.children) {
                     if (friend.child("name").value.toString() == name) {
+                        if(friend.key.toString() == user.uid)
+                            userHandle = friend.child("handle").value.toString()
                         followUid = friend.key.toString()
-                        Log.d("following", followUid)
                         tvFollowerCount.text = friend.child("numFollowers").value.toString()
                         initListeners()
                         updateButton()
                     }
+
+                    else if(friend.key.toString() == user.uid)
+                        userHandle = friend.child("handle").value.toString()
                 }
             }
 
@@ -168,7 +182,7 @@ class SearchProfileActivity : AppCompatActivity() {
 
         ref.child("following").updateChildren(map as Map<String, Boolean>).addOnCompleteListener {
             if(it.isSuccessful) {
-                Log.d("position", "push")
+                buildNotification()
                 updateFollowingCount(1)
             }
             else {
@@ -184,7 +198,6 @@ class SearchProfileActivity : AppCompatActivity() {
 
         db.getReference("Friends/$uid/following").child(followUid).setValue(null).addOnCompleteListener {
             if(it.isSuccessful) {
-                Log.d("position", "pop")
                 updateFollowingCount(-1)
             }
             else {
@@ -195,7 +208,7 @@ class SearchProfileActivity : AppCompatActivity() {
 
     private fun updateFollowingCount(inc: Int) {
         db.reference.child(Collections.Friends.name)
-            .child(user.uid).child("following").addListenerForSingleValueEvent(object:
+            .child(user.uid).child("following").addValueEventListener(object:
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val uid = user.uid
@@ -227,6 +240,42 @@ class SearchProfileActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("Error", error.toString())
+            }
+        })
+    }
+
+    private fun buildNotification() {
+        FirebaseDatabase.getInstance().getReference()
+            .child("Tokens")
+            .child(followUid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val usertoken = dataSnapshot.child("token").value.toString()
+                sendNotification(usertoken, "New Follower", "$userHandle followed you!")
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun sendNotification(token: String, type: String, msg: String) {
+        val data = Data(type, msg)
+        val sender = NotificationSender(data, token)
+
+        apiService.sendNotifcation(sender)!!.enqueue(object : Callback<MyResponse?> {
+
+            override fun onResponse(call: Call<MyResponse?>, response: Response<MyResponse?>) {
+                if (response.code() === 200) {
+                    if (response.body()!!.success !== 1) {
+
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<MyResponse?>, t: Throwable?) {
+
             }
         })
     }

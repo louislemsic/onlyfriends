@@ -52,4 +52,6 @@
     <string name="let_others_know_what_s_interesting_about_you">Let others know what\'s interesting about you.</string>
     <string name="soon_to_be_available">Soon to be available!</string>
     <string name="something_new">Something new?</string>
+    <string name="channel_name">channel 1</string>
+    <string name="channel_description">this is channel 1</string>
 </resources>
