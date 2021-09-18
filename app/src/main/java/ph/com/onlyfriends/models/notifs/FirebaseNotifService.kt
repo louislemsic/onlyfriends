@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -13,6 +12,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import ph.com.onlyfriends.R
 import ph.com.onlyfriends.models.Collections
+import kotlin.random.Random
 
 
 class FirebaseNotifService: FirebaseMessagingService(){
@@ -20,18 +20,28 @@ class FirebaseNotifService: FirebaseMessagingService(){
     private val CHANNEL_ID = "abs-cbn"
     private val currentUser = FirebaseAuth.getInstance().currentUser
     private val pushedNotification = mutableListOf<Int>()
+    private val notifLines = mutableListOf<String>()
     private var pushedNotifsInc = 0
+
     override fun onNewToken(token :String){
         super.onNewToken(token)
-
         updateToken(token)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage){
         super.onMessageReceived(remoteMessage)
 
+        notifLines.add("Really? <handle> decided to follow you?")
+        notifLines.add("Wow. Someone named <handle> is following you now?")
+        notifLines.add("Oh nothing, <handle> just followed you.")
+
         val type = remoteMessage.data["Title"].toString()
-        val message = remoteMessage.data["Message"].toString()
+        val handle = remoteMessage.data["Message"].toString()
+        val recipient = remoteMessage.data["RecipientID"].toString()
+        val sender = remoteMessage.data["SenderID"].toString()
+
+        var message = notifLines[Random.nextInt(0, 3)]
+        message = message.replace("<handle>", handle)
 
         createNotificationChannel()
 
@@ -47,7 +57,7 @@ class FirebaseNotifService: FirebaseMessagingService(){
             pushedNotifsInc++
         }
 
-        updateNotification(type, message)
+        updateNotification(type, "newFollower_$sender", recipient)
     }
 
     private fun updateToken(refreshToken:String){
@@ -57,15 +67,13 @@ class FirebaseNotifService: FirebaseMessagingService(){
             FirebaseDatabase.getInstance().getReference("Tokens").child(currentUser.uid).setValue(token)
     }
 
-    private fun updateNotification(type: String, msg: String) {
-        val notif = Notification(type, msg)
-
+    private fun updateNotification(type: String, key: String, recipient: String) {
         val map: MutableMap<String, Any> = HashMap()
-        map[notif.type] = notif.message
+        map[key] = type
 
         if(currentUser != null)
             FirebaseDatabase.getInstance().getReference(Collections.Friends.name)
-                .child(currentUser.uid).child("notifications")
+                .child(recipient).child("notifications")
                 .updateChildren(map)
     }
 

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,12 +31,11 @@ class SearchProfileActivity : AppCompatActivity() {
     private lateinit var rvPosts: RecyclerView
     private lateinit var postList: ArrayList<Post>
 
+    private lateinit var followUid: String
     private lateinit var name: String
     private lateinit var handle: String
     private lateinit var userHandle: String
     private var isFollowed: Boolean = false
-
-    private lateinit var followUid: String
 
     private var apiService = RetroFitClient
         .getClient("https://fcm.googleapis.com/")
@@ -228,20 +226,38 @@ class SearchProfileActivity : AppCompatActivity() {
     }
 
     private fun updateFollowerCount(inc: Int) {
-        db.reference.child(Collections.Friends.name).child(followUid).addListenerForSingleValueEvent(object:
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var numFollowers = snapshot.child("numFollowers").value as Long
-                numFollowers += inc
-                db.reference.child(Collections.Friends.name).child(followUid).child("numFollowers").setValue(numFollowers)
-                updateButton()
-                updateFollowersCount()
-            }
+//        db.reference.child(Collections.Friends.name).child(followUid).addListenerForSingleValueEvent(object:
+//            ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                var numFollowers = snapshot.child("numFollowers").value as Long
+//                numFollowers += inc
+//                db.reference.child(Collections.Friends.name).child(followUid).child("numFollowers").setValue(numFollowers)
+//                updateButton()
+//                updateFollowersCount()
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                Log.e("Error", error.toString())
+//            }
+//        })
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Error", error.toString())
-            }
-        })
+        db.reference.child(Collections.Friends.name)
+            .child(followUid).child("followers").addValueEventListener(object:
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    db.getReference("Friends/$followUid/numFollowers").setValue(snapshot.childrenCount).addOnCompleteListener {
+                        if(it.isSuccessful)
+                            updateFollowersCount()
+                        else
+                            Log.d("updateFollowingCount", "error")
+                    }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Error", error.toString())
+                }
+            })
     }
 
     private fun buildNotification() {
@@ -251,7 +267,7 @@ class SearchProfileActivity : AppCompatActivity() {
             .addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val usertoken = dataSnapshot.child("token").value.toString()
-                sendNotification(usertoken, "New Follower", "$userHandle followed you!")
+                sendNotification(usertoken, "New Follower", userHandle)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -261,7 +277,7 @@ class SearchProfileActivity : AppCompatActivity() {
     }
 
     private fun sendNotification(token: String, type: String, msg: String) {
-        val data = Data(type, msg)
+        val data = Data(type, msg, followUid, user.uid)
         val sender = NotificationSender(data, token)
 
         apiService.sendNotifcation(sender)!!.enqueue(object : Callback<MyResponse?> {
