@@ -133,6 +133,11 @@ class RegisterActivity : AppCompatActivity() {
             this.etHandle.requestFocus()
             isValid = false
         }
+        else if (handle.length >= 15) {                       // Checks the Handle if less than 15 characters long.
+            this.etHandle.error = "Your handle must be shorter than 15 characters."
+            this.etHandle.requestFocus()
+            isValid = false
+        }
         else if (!isHandleValid(handle)){              // Checks the Format of the Handle
             this.etHandle.error = "Numbers, Letters, and underscores only"
             this.etHandle.requestFocus()
