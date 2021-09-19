@@ -1,13 +1,14 @@
 package ph.com.onlyfriends
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var etEmail: EditText
@@ -21,6 +22,12 @@ class LoginActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 
         initializeComponents()
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun initializeComponents() {
