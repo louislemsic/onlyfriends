@@ -17,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import ph.com.onlyfriends.models.Collections
 import ph.com.onlyfriends.models.EditHandleFinderThread
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -95,7 +97,10 @@ class EditProfileActivity : AppCompatActivity() {
                 val newHandle = editHandle.text.toString()
                 val newBio = editBio.text.toString()
 
-                updateDatabase(newName, newHandle, newBio)
+                if (areInputsValid(newName, newHandle))
+                    updateDatabase(newName, newHandle, newBio)
+                else
+                    isEditable(true)
             }
             else {
                 Toast.makeText(this, "Fix all errors first", Toast.LENGTH_SHORT).show()
@@ -135,5 +140,43 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun areInputsValid(name: String, handle: String): Boolean {
+        var isValid = true
+
+        if (name.isEmpty()) {                         // Checks the Name Field if Empty
+            this.editDisplayName.error = "Required Field"
+            this.editDisplayName.requestFocus()
+            isValid = false
+        }
+
+        if (editHandle.error != null) {
+            Toast.makeText(this, "Fix all errors first", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        else if (handle.isEmpty()) {                       // Checks the Handle Field if Empty
+            this.editHandle.error = "Required Field"
+            this.editHandle.requestFocus()
+            isValid = false
+        }
+        else if (handle.length >= 15) {                       // Checks the Handle if less than 15 characters long.
+            this.editHandle.error = "Your handle must be shorter than 15 characters."
+            this.editHandle.requestFocus()
+            isValid = false
+        }
+        else if (!isHandleValid(handle)){              // Checks the Format of the Handle
+            this.editHandle.error = "Numbers, Letters, and underscores only"
+            this.editHandle.requestFocus()
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    private fun isHandleValid(handle: String): Boolean {
+        val expression = "(?=.*\\w)[\\w]{1,15}\$"
+        val pattern: Pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+        val matcher: Matcher = pattern.matcher(handle)
+        return matcher.matches()
+    }
 
 }
