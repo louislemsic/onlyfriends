@@ -171,6 +171,37 @@ class SearchProfileActivity : AppCompatActivity() {
         })
     }
 
+    private fun pushFollower() {
+        val uid = user.uid
+        val ref = db.getReference("Friends/$followUid")
+
+        val map: MutableMap<String, Boolean> = HashMap()
+        map[uid] = true
+
+        ref.child("followers").updateChildren(map as Map<String, Boolean>).addOnCompleteListener {
+            if(it.isSuccessful) {
+                buildNotification()
+                updateFollowingCount()
+            }
+            else {
+                Log.d("increment followers", "failed")
+            }
+        }
+    }
+
+    private fun popFollower() {
+        val uid = user.uid
+
+        db.getReference("Friends/$followUid/followers").child(uid).setValue(null).addOnCompleteListener {
+            if(it.isSuccessful) {
+                updateFollowingCount()
+            }
+            else {
+                Log.d("increment", "failed")
+            }
+        }
+    }
+
     private fun pushFollowing() {
         val uid = user.uid
         val ref = db.getReference("Friends/$uid")
@@ -180,15 +211,12 @@ class SearchProfileActivity : AppCompatActivity() {
 
         ref.child("following").updateChildren(map as Map<String, Boolean>).addOnCompleteListener {
             if(it.isSuccessful) {
-                buildNotification()
-                updateFollowingCount(1)
+                pushFollower()
             }
             else {
                 Log.d("increment", "failed")
             }
         }
-
-
     }
 
     private fun popFollowing() {
@@ -196,7 +224,7 @@ class SearchProfileActivity : AppCompatActivity() {
 
         db.getReference("Friends/$uid/following").child(followUid).setValue(null).addOnCompleteListener {
             if(it.isSuccessful) {
-                updateFollowingCount(-1)
+                popFollower()
             }
             else {
                 Log.d("increment", "failed")
@@ -204,7 +232,7 @@ class SearchProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFollowingCount(inc: Int) {
+    private fun updateFollowingCount() {
         db.reference.child(Collections.Friends.name)
             .child(user.uid).child("following").addValueEventListener(object:
                 ValueEventListener {
@@ -212,7 +240,7 @@ class SearchProfileActivity : AppCompatActivity() {
                     val uid = user.uid
                     db.getReference("Friends/$uid/numFollowing").setValue(snapshot.childrenCount).addOnCompleteListener {
                         if(it.isSuccessful)
-                            updateFollowerCount(inc)
+                            updateFollowerCount()
                         else
                             Log.d("updateFollowingCount", "error")
                     }
@@ -225,29 +253,16 @@ class SearchProfileActivity : AppCompatActivity() {
             })
     }
 
-    private fun updateFollowerCount(inc: Int) {
-//        db.reference.child(Collections.Friends.name).child(followUid).addListenerForSingleValueEvent(object:
-//            ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                var numFollowers = snapshot.child("numFollowers").value as Long
-//                numFollowers += inc
-//                db.reference.child(Collections.Friends.name).child(followUid).child("numFollowers").setValue(numFollowers)
-//                updateButton()
-//                updateFollowersCount()
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.e("Error", error.toString())
-//            }
-//        })
-
+    private fun updateFollowerCount() {
         db.reference.child(Collections.Friends.name)
             .child(followUid).child("followers").addValueEventListener(object:
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     db.getReference("Friends/$followUid/numFollowers").setValue(snapshot.childrenCount).addOnCompleteListener {
-                        if(it.isSuccessful)
+                        if(it.isSuccessful) {
+                            updateButton()
                             updateFollowersCount()
+                        }
                         else
                             Log.d("updateFollowingCount", "error")
                     }
