@@ -62,15 +62,5 @@
             app:layout_constraintStart_toStartOf="@+id/tv_post_handle"
             app:layout_constraintTop_toBottomOf="@+id/tv_post_dp" />
 
-        <TextView
-            android:id="@+id/border2"
-            android:layout_width="0dp"
-            android:layout_height="2dp"
-            android:layout_marginTop="8dp"
-            android:background="#943DC0D1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_post_content" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

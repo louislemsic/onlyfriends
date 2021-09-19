@@ -3,12 +3,13 @@ package ph.com.onlyfriends.fragments.chat
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,6 +21,7 @@ import ph.com.onlyfriends.R
 import ph.com.onlyfriends.models.Collections
 import ph.com.onlyfriends.models.Post
 import ph.com.onlyfriends.models.Whitelist
+
 
 class PostFragment : Fragment() {
 
@@ -102,6 +104,12 @@ class PostFragment : Fragment() {
         // recycler view and adapter
         rvPosts = view.findViewById(R.id.rv_posts)
         rvPosts.layoutManager = LinearLayoutManager(this.context)
+        rvPosts.addItemDecoration(
+            DividerItemDecoration(
+                rvPosts.context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         postList = arrayListOf()
 
         // show new posts first
