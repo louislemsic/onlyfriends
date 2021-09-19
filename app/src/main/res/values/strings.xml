@@ -55,4 +55,5 @@
     <string name="channel_name">channel 1</string>
     <string name="channel_description">this is channel 1</string>
     <string name="tv_notif_content">Retrieving notifications of your greatness</string>
+    <string name="NoSearchBio">This person hasn\'t set their bio yet</string>
 </resources>

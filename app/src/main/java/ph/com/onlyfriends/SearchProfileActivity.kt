@@ -26,6 +26,7 @@ class SearchProfileActivity : AppCompatActivity() {
     private lateinit var tvName: TextView
     private lateinit var tvHandle: TextView
     private lateinit var tvFollowerCount: TextView
+    private lateinit var tvBio: TextView
     private lateinit var btnFollow: Button
 
     private lateinit var rvPosts: RecyclerView
@@ -48,6 +49,7 @@ class SearchProfileActivity : AppCompatActivity() {
         this.tvFollowerCount = findViewById(R.id.tv_search_followers)
         this.tvName = findViewById(R.id.tv_profile_name)
         this.tvHandle = findViewById(R.id.tv_profile_handle)
+        this.tvBio = findViewById(R.id.tv_search_bio)
         this.btnFollow = findViewById(R.id.btn_profile_follow)
 
         getIntentData()
@@ -113,6 +115,13 @@ class SearchProfileActivity : AppCompatActivity() {
                             userHandle = friend.child("handle").value.toString()
                         followUid = friend.key.toString()
                         tvFollowerCount.text = friend.child("numFollowers").value.toString()
+                        val bio = friend.child("bio").value.toString()
+
+                        if(bio.isNotEmpty())
+                            tvBio.text = bio
+                        else
+                            tvBio.text = getString(R.string.NoSearchBio)
+
                         initListeners()
                         updateButton()
                     }
