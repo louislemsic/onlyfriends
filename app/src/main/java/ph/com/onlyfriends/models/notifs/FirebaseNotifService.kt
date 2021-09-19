@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +19,7 @@ import kotlin.random.Random
 class FirebaseNotifService: FirebaseMessagingService(){
 
     private val CHANNEL_ID = "abs-cbn"
-    private val currentUser = FirebaseAuth.getInstance().currentUser
+    private var currentUser = FirebaseAuth.getInstance().currentUser
     private val pushedNotification = mutableListOf<Int>()
     private val notifLines = mutableListOf<String>()
     private var pushedNotifsInc = 0
@@ -57,17 +58,18 @@ class FirebaseNotifService: FirebaseMessagingService(){
             pushedNotifsInc++
         }
 
-        updateNotification(type, "newFollower_$sender", recipient)
+        updateNotification(handle, "newFollower_$sender", recipient)
     }
 
     private fun updateToken(refreshToken:String){
         val token = Token(refreshToken)
 
         if (currentUser != null)
-            FirebaseDatabase.getInstance().getReference("Tokens").child(currentUser.uid).setValue(token)
+            FirebaseDatabase.getInstance().getReference("Tokens").child(currentUser!!.uid).setValue(token)
     }
 
     private fun updateNotification(type: String, key: String, recipient: String) {
+        currentUser = FirebaseAuth.getInstance().currentUser
         val map: MutableMap<String, Any> = HashMap()
         map[key] = type
 
